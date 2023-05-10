@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocStorageApi", "DocStorage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocStorageApi.Integration.Test", "DocStorageApi.Test\DocStorageApi.Integration.Test.csproj", "{E466D483-48F7-457E-B653-533EB1214377}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocStorageApi.Command.Test", "DocStorage.DbObjects.Test\DocStorageApi.Command.Test.csproj", "{B0FCAB00-5908-4126-8577-72026C7D9AB7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocStorageApi.Command.Test", "DocStorageApi.Command.Test\DocStorageApi.Command.Test.csproj", "{B0FCAB00-5908-4126-8577-72026C7D9AB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
