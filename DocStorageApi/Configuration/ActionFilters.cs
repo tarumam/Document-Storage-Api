@@ -9,7 +9,10 @@ namespace DocStorageApi.Configuration
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            // Executed before the action method
+            if (!context.ModelState.IsValid)
+            {
+                context.Result = new BadRequestObjectResult(context.ModelState);
+            }
         }
 
         public void OnActionExecuted(ActionExecutedContext context)

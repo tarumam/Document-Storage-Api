@@ -35,11 +35,6 @@ namespace DocStorageApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> SignUp([Required] AuthRequest authInfo)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             CreateUserRequest user = new()
             {
                 Username = authInfo.userName,
@@ -69,11 +64,6 @@ namespace DocStorageApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> SignIn([Required] AuthRequest authInfo)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var user = await _authService.SignInAsync(authInfo);
 
             if (user == null)

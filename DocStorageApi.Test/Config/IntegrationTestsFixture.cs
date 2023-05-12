@@ -32,7 +32,7 @@ namespace DocStorageApi.Integration.Tests.Config
         // Load Testable data
         private async Task LoadUserDataAsync()
         {
-            AdminToken = await SignInAs("Admin");
+            AdminToken = await SignInAs("admin@admin.com");
             ValidUsers = await ListUsers();
             ValidDocuments = await ListDocumentDataAsync();
             ValidAccessGroup = await ListAccessGroupDataAsync();
@@ -40,9 +40,9 @@ namespace DocStorageApi.Integration.Tests.Config
             ValidDocsWithPermissions = await ListDocumentsWithPermissionsByUser(null);
         }
 
-        public async Task<string> SignInAs(string role)
+        public async Task<string> SignInAs(string username)
         {
-            var authModel = new AuthRequest(role, "string");
+            var authModel = new AuthRequest(username, "string");
             var response = await Client.PostAsJsonAsync($"{Constants.AuthenticationRoute}/SignIn", authModel);
 
             response.EnsureSuccessStatusCode();

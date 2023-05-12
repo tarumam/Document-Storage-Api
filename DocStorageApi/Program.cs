@@ -1,6 +1,5 @@
 using DocStorageApi.Configuration;
 using DocStorageApi.Data.Migrations;
-using Microsoft.AspNetCore.Hosting;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -28,7 +27,6 @@ builder.Services.AddDocStorageCors();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 var app = builder.Build();
-
 app.MigrateDatabase();
 app.UseHttpsRedirection();
 app.UseOpenApiDocumentation();

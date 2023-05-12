@@ -2,21 +2,24 @@
 
 namespace DocStorageApi.Data.Commands
 {
-    /// <summary>
-    /// represents insert_user
-    /// </summary>
-    /// <param name="Name">Name</param>
-    /// <param name="Password">Password</param>
-    /// <param name="Role">User Role</param>
-    /// <param name="Status">Status</param>
-    /// <returns>Inserted user id</returns>
+
     public class InsertUserCommand : BaseCommand
     {
-        public InsertUserCommand(string name, string password, string role, bool status)
+        /// <summary>
+        /// represents insert_user
+        /// </summary>
+        /// <param name="name">Name</param>
+        /// <param name="password">Password</param>
+        /// <param name="role">User Role</param>
+        /// <param name="salt">Pass salt</param>
+        /// <param name="status">Status</param>
+        /// <returns>Inserted user id</returns>
+        public InsertUserCommand(string name, string password, string role, string salt, bool status)
         {
             Name = name;
             Password = password;
             Role = role;
+            Salt = salt;
             Status = status;
         }
 
@@ -35,6 +38,9 @@ namespace DocStorageApi.Data.Commands
         [MaxLength(10)]
         public string Role { get; private set; }
 
+        [Required]
+        [StringLength(50, MinimumLength = 10)]
+        public string Salt { get; private set; }
         public bool Status { get; private set; }
 
         public override string Script => "SELECT insert_user(@Name, @Password, @Role, @Status)";

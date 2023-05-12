@@ -1,5 +1,4 @@
-﻿using DocStorageApi.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DocStorageApi.DTO.Request
 {
@@ -8,6 +7,7 @@ namespace DocStorageApi.DTO.Request
 
         [Required]
         [StringLength(50)]
+        [EmailAddress]
         public string Username { get; set; }
 
         [Required]

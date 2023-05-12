@@ -3,9 +3,13 @@
 namespace DocStorageApi.DTO.Request
 {
     public record AuthRequest(
-        [Required][MaxLength(50)] string userName,
-        [Required][MaxLength(50)] string password)
-    {
-
-    }
+        [Required]
+        [MaxLength(50)]
+        [EmailAddress]
+        string userName,
+        
+        [Required]
+        [MaxLength(50)]
+        string password
+    );
 }

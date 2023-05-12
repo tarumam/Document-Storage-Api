@@ -18,7 +18,7 @@ namespace DocStorageApi.Integration.Tests
         public async Task SignUp_Returns_UserId_When_Valid_Info_Is_Provided()
         {
             // Arrange
-            var authModel = new AuthRequest("testUser", "testPassword");
+            var authModel = new AuthRequest("testUser@testuser.com", "testPassword");
 
             // Act
             var response = await _testsFixture.Client.PostAsJsonAsync($"{Constants.AuthenticationRoute}/SignUp", authModel);
@@ -33,7 +33,7 @@ namespace DocStorageApi.Integration.Tests
         public async Task SignIn_Returns_JwtToken_When_Valid_Info_Is_Provided()
         {
             // Arrange
-            var authModel = new AuthRequest("Admin", "string");
+            var authModel = new AuthRequest("admin@admin.com", "string");
 
             // Act
             var response = await _testsFixture.Client.PostAsJsonAsync($"{Constants.AuthenticationRoute}/SignIn", authModel);
@@ -61,7 +61,7 @@ namespace DocStorageApi.Integration.Tests
         public async Task SignIn_Returns_Unauthorized_When_Invalid_Info_Is_Provided()
         {
             // Arrange
-            var authModel = new AuthRequest("testUser", "wrongPassword");
+            var authModel = new AuthRequest("admin@admin.com", "wrongPassword");
 
             // Act
             var response = await _testsFixture.Client.PostAsJsonAsync($"{Constants.AuthenticationRoute}/SignIn", authModel);

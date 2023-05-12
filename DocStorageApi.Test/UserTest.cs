@@ -56,7 +56,7 @@ namespace DocStorageApi.Integration.Tests
 
             var userRequest = new CreateUserRequest
             {
-                Username = "John",
+                Username = "john@john.com",
                 Password = "Doe",
                 Role = "Regular"
             };
@@ -103,7 +103,7 @@ namespace DocStorageApi.Integration.Tests
             var userRequest = new UpdateUserRequest
             {
                 Id = firstUser.UserId,
-                Username = "New Username",
+                Username = "NewUsername@anymail.com",
                 Password = "Gonna be encrypted",
                 Role = "Invalid",
                 Status = false
@@ -120,7 +120,7 @@ namespace DocStorageApi.Integration.Tests
             var updatedUser = selectUpdatedUser.Where(u => u.UserId == firstUser.UserId).FirstOrDefault();
 
             Assert.NotNull(updatedUser);
-            Assert.Equal("New Username", updatedUser.Name);
+            Assert.Equal("NewUsername@anymail.com", updatedUser.Name);
             Assert.NotEqual("Gonna be encrypted", updatedUser.Password);
             Assert.Equal("Invalid", updatedUser.Role);
             Assert.Equal(firstUser.CreatedAt, updatedUser.CreatedAt);

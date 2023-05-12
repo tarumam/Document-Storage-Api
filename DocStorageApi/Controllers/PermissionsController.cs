@@ -52,11 +52,6 @@ namespace DocStorageApi.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<DocumentPermissionsWithUserResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ListDocumentPermissionsWithUsers(Guid? userId = null)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var status = await _permissionSvc.ListDocumentPermissionsWithUsers(userId);
 
             if (status.Any())
@@ -76,11 +71,6 @@ namespace DocStorageApi.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<DocumentPermissionsWithUserResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ListUserAccessGroups(Guid? userId = null)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var status = await _permissionSvc.GetUserAccessGroups(userId);
 
             if (status.Any())
@@ -176,11 +166,6 @@ namespace DocStorageApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RemoveUserFromAccessGroup([Required] Guid userId, [Required] Guid accessGroupId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var status = await _permissionSvc.RemoveUserFromAccessGroupsAsync(new RemoveUserFromAccessGroupRequest(userId, accessGroupId));
 
             if (status)
@@ -202,11 +187,6 @@ namespace DocStorageApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RemoveUserAccessFromDocument(Guid userId, Guid documentId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var status = await _permissionSvc.RemoveUserAccessFromDocument(new RemoveUserAccessToDocumentRequest(documentId, userId));
 
             if (status)
@@ -228,11 +208,6 @@ namespace DocStorageApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RemoveUserAccessGroupFromDocument(Guid accessGroupId, Guid documentId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var status = await _permissionSvc.RemoveUserAccessGroupFromDocument(new RemoveAccessGroupToDocumentRequest(documentId, accessGroupId));
 
             if (status)

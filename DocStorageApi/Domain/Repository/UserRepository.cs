@@ -47,5 +47,11 @@ namespace DocStorageApi.Domain.Repository
         {
             return await QueryAsync<UserResponse>(query.Script);
         }
+
+        public async Task<string> GetSaltByUserName(GetSaltByUsername query)
+        {
+            return await QueryFirstOrDefaultAsync<string>(query.Script, query.Param);
+        }
+
     }
 }

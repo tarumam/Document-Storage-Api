@@ -1,4 +1,5 @@
-﻿using DocStorageApi.Domain.Repository.Interfaces;
+﻿using DocStorageApi.Data.Queries;
+using DocStorageApi.Domain.Repository.Interfaces;
 using DocStorageApi.DTO.Request;
 using DocStorageApi.DTO.Response;
 using DocStorageApi.Services.Interfaces;
@@ -17,7 +18,8 @@ namespace DocStorageApi.Services
 
         public async Task<UserCredentialsResult> SignInAsync(AuthRequest authInfo)
         {
-            var hashedPass = HashPassword.HashIt(authInfo.password);
+            var salt = await _userRepository.GetSaltByUserName(new GetSaltByUsername(authInfo.userName));
+            var hashedPass = HashPassword.HashIt(authInfo.password + salt);
             var userInfo = await _userRepository.GetUserByCredentials(authInfo.userName, hashedPass);
             return userInfo;
         }

@@ -19,15 +19,17 @@ namespace DocStorageApi.Services
 
         public async Task<Guid?> CreateUserAsync(CreateUserRequest userRequest)
         {
-            string hashedPass = HashPassword.HashIt(userRequest.Password);
-            var result = await _userRepository.InsertUserAsync(new InsertUserCommand(userRequest.Username, hashedPass, userRequest.Role, true));
+            string salt = Guid.NewGuid().ToString();
+            string hashedPass = HashPassword.HashIt(userRequest.Password + salt);
+            var result = await _userRepository.InsertUserAsync(new InsertUserCommand(userRequest.Username, hashedPass, userRequest.Role, salt, true));
             return result.Data;
         }
 
         public async Task<bool> UpdateUserAsync(UpdateUserRequest request)
         {
-            var hashedPass = HashPassword.HashIt(request.Password);
-            var result = await _userRepository.UpdateUserAsync(new UpdateUserCommand(request.Id, request.Username, hashedPass, request.Role, request.Status));
+            string salt = Guid.NewGuid().ToString();
+            string hashedPass = HashPassword.HashIt(request.Password + salt);
+            var result = await _userRepository.UpdateUserAsync(new UpdateUserCommand(request.Id, request.Username, hashedPass, request.Role, salt, request.Status));
             return result.Succeeded;
         }
 

@@ -75,11 +75,6 @@ namespace DocStorageApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest userRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var userId = await _userService.CreateUserAsync(userRequest);
 
             if(userId == null)
@@ -103,11 +98,6 @@ namespace DocStorageApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest userRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var result = await _userService.UpdateUserAsync(userRequest);
 
             if(!result)

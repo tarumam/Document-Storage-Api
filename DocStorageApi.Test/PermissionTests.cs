@@ -84,7 +84,7 @@ namespace DocStorageApi.Integration.Tests
         {
             // Arrange
             _fixture.Client.SetTokenToRequestHeader(_fixture.AdminToken);
-            var authModel = new AuthRequest("testUser", "testPassword");
+            var authModel = new AuthRequest("testUser@testuser.com", "testPassword");
             var signUpResponse = await _fixture.Client.PostAsJsonAsync($"{Constants.AuthenticationRoute}/SignUp", authModel);
             signUpResponse.EnsureSuccessStatusCode();
             Guid userId = await signUpResponse.Content.ReadFromJsonAsync<Guid>();

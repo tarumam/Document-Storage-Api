@@ -13,7 +13,8 @@
         public string Script => @"SELECT 
                                     u.id as UserId, 
                                     u.token_id as TokenId, 
-                                    u.role as Role
+                                    u.role as Role,
+                                    u.salt as Salt
                                  FROM users u
                                  WHERE u.name = @Username AND u.password = @Password;";
 

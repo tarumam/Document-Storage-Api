@@ -9,6 +9,7 @@ namespace DocStorageApi.DTO.Request
 
         [Required]
         [StringLength(50)]
+        [EmailAddress]
         public string Username { get; set; }
 
         [Required]

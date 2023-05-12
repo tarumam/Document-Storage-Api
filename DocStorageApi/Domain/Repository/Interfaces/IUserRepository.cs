@@ -18,6 +18,8 @@ namespace DocStorageApi.Domain.Repository.Interfaces
 
         Task<UserResponse> GetUserByIdAsync(GetUserByIdQuery query);
 
+        Task<string> GetSaltByUserName(GetSaltByUsername query);
+
         Task<IEnumerable<UserResponse>> ListUsersAsync(ListAllUsersQuery query);
     }
 }
