@@ -3,6 +3,7 @@ using DocStorageApi.Data.Queries;
 using DocStorageApi.DbObjects.Test.Config;
 using DocStorageApi.Domain.Repository.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using System.Data;
 
 namespace DocStorageApi.Command.Test
@@ -33,7 +34,7 @@ namespace DocStorageApi.Command.Test
             var users = await _userRepository.ListUsersAsync(new ListAllUsersQuery());
             var user = users.FirstOrDefault();
 
-            var newDocCommand = new InsertDocumentCommand("filepath.jpg", "name", "category", "description", DateTime.Now, true, user.UserId);
+            var newDocCommand = new InsertDocumentCommand("filepath.jpg", "name", "category", "description", DateTime.UtcNow, true, user.UserId);
             var newDoc = await _docRepository.AddNewDocumentAsync(newDocCommand);
 
             var documents = await _docRepository.GetAllDocumentsAsync();
@@ -49,7 +50,7 @@ namespace DocStorageApi.Command.Test
             var userDocs = await _docAccessUserRepo.GetAllDocumentsAssociatedToUsersAsync(user.UserId);
             var userDoc = userDocs.FirstOrDefault(d => d.DocumentId == document.Id);
 
-            Assert.True(result.Succeeded);
+            Assert.True(result.Executed);
             Assert.False(result.Errors.Any());
             Assert.Equal(1, result.Data);
             Assert.NotNull(userDoc);
@@ -68,10 +69,9 @@ namespace DocStorageApi.Command.Test
             var result = await _docAccessUserRepo.GrantDocPermissionForUserAsync(command);
 
             // Assert
-            Assert.False(result.Succeeded);
-            Assert.True(result.Errors.Any());
+            Assert.True(result.Executed);
+            Assert.False(result.Errors.Any());
             Assert.Equal(0, result.Data);
-            Assert.True(result.Errors.First().MemberNames.First() == "P0001");
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace DocStorageApi.Command.Test
             var resultUserDocs = await _docRepository.ListDocumentPermissionsWithUsers(null);
             var deleted = resultUserDocs.Where(u => u.DocumentId == userDoc.DocumentId && u.UserId == userDoc.UserId).Any();
 
-            Assert.True(result.Succeeded);
+            Assert.True(result.Executed);
             Assert.False(result.Errors.Any());
             Assert.Equal(1, result.Data);
             Assert.False(deleted);
@@ -102,7 +102,7 @@ namespace DocStorageApi.Command.Test
             var groupDocs = await _docRepository.ListDocumentPermissionsWithUsers(null);
             var groupDoc = groupDocs.LastOrDefault(d => d.AccessType == "G");
 
-            var newDocCommand = new InsertDocumentCommand("filepath.jpg", "name", "category", "description", DateTime.Now, true, groupDoc.UserId);
+            var newDocCommand = new InsertDocumentCommand("filepath.jpg", "name", "category", "description", DateTime.UtcNow, true, groupDoc.UserId);
             var newDoc = await _docRepository.AddNewDocumentAsync(newDocCommand);
             var command = new AssignGroupToDocumentCommand(groupDoc.AccessGroupId, (Guid)newDoc.Data, groupDoc.UserId);
 
@@ -113,7 +113,7 @@ namespace DocStorageApi.Command.Test
             var groupDocsResult = await _docRepository.ListDocumentPermissionsWithUsers(groupDoc.UserId);
             var groupDocResult = groupDocsResult.FirstOrDefault(g => g.DocumentId == newDoc.Data);
 
-            Assert.True(result.Succeeded);
+            Assert.True(result.Executed);
             Assert.False(result.Errors.Any());
             Assert.Equal(1, result.Data);
             Assert.NotNull(groupDoc);
@@ -121,7 +121,7 @@ namespace DocStorageApi.Command.Test
         }
 
         [Fact]
-        public async Task GrantDocPermissionForGroupAsync_Should_Fail_On_UniqueKey_Violation()
+        public async Task GrantDocPermissionForGroupAsync_Should_Throw_UniqueKey_Violation()
         {
             // Arrange
             var groupDocs = await _docRepository.ListDocumentPermissionsWithUsers(null);
@@ -129,13 +129,11 @@ namespace DocStorageApi.Command.Test
             var command = new AssignGroupToDocumentCommand(groupDoc.DocumentId, groupDoc.AccessGroupId, groupDoc.UserId);
 
             // Act
-            var result = await _docAccessGroupRepo.GrantDocPermissionForGroupAsync(command);
+            Func<Task> act = async () => await _docAccessGroupRepo.GrantDocPermissionForGroupAsync(command);
 
             // Assert
-            Assert.False(result.Succeeded);
-            Assert.True(result.Errors.Any());
-            Assert.Equal(0, result.Data);
-            Assert.True(result.Errors.First().MemberNames.First() == "P0001");
+            await Assert.ThrowsAsync<PostgresException>(act);
+
         }
 
         [Fact]
@@ -153,7 +151,7 @@ namespace DocStorageApi.Command.Test
             var resultGroupDocs = await _docRepository.ListDocumentPermissionsWithUsers(null);
             var deleted = resultGroupDocs.Where(u => u.DocumentId == groupDoc.DocumentId && u.AccessGroupId == groupDoc.AccessGroupId).Any();
 
-            Assert.True(result.Succeeded);
+            Assert.True(result.Executed);
             Assert.False(result.Errors.Any());
             Assert.Equal(1, result.Data);
             Assert.False(deleted);

@@ -27,10 +27,9 @@ namespace DocStorageApi.Data.Migrations
 
             Execute.Sql("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"");
 
-
             Create.Table(_Entities.Users)
             .WithColumn("id").AsGuid().NotNullable().PrimaryKey().WithDefault(SystemMethods.NewGuid)
-            .WithColumn("name").AsString(50).NotNullable().Unique()
+            .WithColumn("name").AsString(50).NotNullable()
             .WithColumn("password").AsString(100).NotNullable()
             .WithColumn("token_id").AsString(100).Nullable()
             .WithColumn("status").AsBoolean()
@@ -38,16 +37,24 @@ namespace DocStorageApi.Data.Migrations
             .WithColumn("created_at").AsDateTimeOffset().NotNullable().WithDefaultValue(SystemMethods.CurrentUTCDateTime)
             .WithColumn("updated_at").AsDateTimeOffset().NotNullable().WithDefault(SystemMethods.CurrentUTCDateTime);
 
+            Create.UniqueConstraint("users_unique_name")
+            .OnTable(_Entities.Users)
+            .Columns("name");
+
             Create.Table(_Entities.AccessGroups)
             .WithColumn("id").AsGuid().NotNullable().PrimaryKey().WithDefault(SystemMethods.NewGuid)
-            .WithColumn("name").AsString(50).NotNullable().Unique()
+            .WithColumn("name").AsString(50).NotNullable()
             .WithColumn("status").AsBoolean()
             .WithColumn("created_at").AsDateTimeOffset().NotNullable().WithDefaultValue(SystemMethods.CurrentUTCDateTime)
             .WithColumn("updated_at").AsDateTimeOffset().NotNullable().WithDefault(SystemMethods.CurrentUTCDateTime);
+            
+            Create.UniqueConstraint("access_groups_unique_name")
+            .OnTable(_Entities.AccessGroups)
+            .Columns("name");
 
             Create.Table(_Entities.Documents)
             .WithColumn("id").AsGuid().NotNullable().PrimaryKey().WithDefault(SystemMethods.NewGuid)
-            .WithColumn("file_path").AsString(1000).NotNullable().Unique()
+            .WithColumn("file_path").AsString(1000).NotNullable()
             .WithColumn("name").AsString(50).Nullable()
             .WithColumn("category").AsString(500).Nullable()
             .WithColumn("description").AsString(500).Nullable()
@@ -56,6 +63,10 @@ namespace DocStorageApi.Data.Migrations
             .WithColumn("created_by_user").AsGuid().NotNullable().ForeignKey("fk_users_documents", _Entities.Users, "id")
             .WithColumn("created_at").AsDateTimeOffset().NotNullable().WithDefaultValue(SystemMethods.CurrentUTCDateTime)
             .WithColumn("updated_at").AsDateTimeOffset().NotNullable().WithDefault(SystemMethods.CurrentUTCDateTime);
+
+            Create.UniqueConstraint("documents_unique_file_path")
+            .OnTable(_Entities.Documents)
+            .Columns("file_path");
 
             // With FKs
             Create.Table(_Entities.UserAccessGroups)

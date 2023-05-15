@@ -20,12 +20,12 @@ namespace DocStorageApi.Domain.Repository
 
         public async Task<CommandResult<int>> RemoveDocPermissionForUserAsync(RemoveDocumentAccessUser command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
 
         public async Task<CommandResult<int>> GrantDocPermissionForUserAsync(AssignUserToDocumentCommand command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
     }
 }

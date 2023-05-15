@@ -1,4 +1,5 @@
 ﻿using DocStorageApi.Data.Commands;
+using Npgsql;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -22,5 +23,9 @@ public class RemoveUserAccessGroupCommand : BaseCommand
     public Guid GroupId { get; }
 
     public override string Script => "SELECT remove_user_access_group(@UserId, @GroupId)";
-    public override object Param => new { UserId, GroupId };
+    public override List<NpgsqlParameter> Parameters => new List<NpgsqlParameter>()
+    {
+        new NpgsqlParameter("UserId", UserId),
+        new NpgsqlParameter("GroupId", GroupId)
+    };  
 }

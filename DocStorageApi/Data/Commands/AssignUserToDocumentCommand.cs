@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Npgsql;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocStorageApi.Data.Commands
 {
@@ -16,8 +17,15 @@ namespace DocStorageApi.Data.Commands
             DocId = docId;
             GrantedByUser = grantedByUser;
         }
+
         public override string Script => @"SELECT assign_user_to_document(@UserId, @DocId, @GrantedByUser)";
-        public override object Param => new { UserId, DocId, GrantedByUser };
+
+        public override List<NpgsqlParameter> Parameters => new List<NpgsqlParameter>()
+        {
+        new NpgsqlParameter<Guid>("@UserId", UserId),
+        new NpgsqlParameter<Guid>("@DocId", DocId),
+        new NpgsqlParameter<Guid>("@GrantedByUser", GrantedByUser)
+        };
 
         [Required]
         public Guid UserId { get; private set; }
@@ -27,6 +35,5 @@ namespace DocStorageApi.Data.Commands
 
         [Required]
         public Guid GrantedByUser { get; private set; }
-
     }
 }

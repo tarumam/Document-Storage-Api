@@ -13,9 +13,5 @@ BEGIN
 
     RETURN rows_affected;
 
-EXCEPTION 
-    WHEN others THEN
-        RAISE NOTICE 'An unknown error has occurred.';
-        RETURN -1;
 END;
 $$ LANGUAGE plpgsql;

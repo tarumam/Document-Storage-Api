@@ -30,13 +30,13 @@ namespace DocStorageApi.Services
             string salt = Guid.NewGuid().ToString();
             string hashedPass = HashPassword.HashIt(request.Password + salt);
             var result = await _userRepository.UpdateUserAsync(new UpdateUserCommand(request.Id, request.Username, hashedPass, request.Role, salt, request.Status));
-            return result.Succeeded;
+            return result.Executed;
         }
 
         public async Task<bool> DisableUserAsync(Guid userId)
         {
             var result = await _userRepository.DisableUserAsync(new DisableUserCommand(userId));
-            return result.Succeeded;
+            return result.Executed;
         }
 
         public async Task<bool> UpdateTokenIdAsync(Guid userId, string tokenId)
@@ -44,7 +44,7 @@ namespace DocStorageApi.Services
             if (string.IsNullOrEmpty(tokenId)) return false;
 
             var result = await _userRepository.UpdateTokenId(new UpdateUserTokenIdCommand(userId, tokenId));
-            return result.Succeeded;
+            return result.Executed;
         }
 
         public async Task<UserResponse> GetUserByIdAsync(Guid userId)

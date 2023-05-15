@@ -14,7 +14,7 @@ namespace DocStorageApi.Domain.Repository
 
         public async Task<CommandResult<int>> GrantDocPermissionForGroupAsync(AssignGroupToDocumentCommand command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
 
         public async Task<IEnumerable<DocumentAccessGroupsResponse>> GetAllGroupsAssociatedToDocumentAsync(Guid documentId)
@@ -31,7 +31,7 @@ namespace DocStorageApi.Domain.Repository
 
         public async Task<CommandResult<int>> RemoveDocPermissionFromGroupAsync(RemoveDocumentAccessGroup command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
     }
 }

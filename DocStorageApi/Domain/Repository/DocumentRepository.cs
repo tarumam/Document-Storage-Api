@@ -12,12 +12,12 @@ namespace DocStorageApi.Domain.Repository
 
         public async Task<CommandResult<Guid?>> AddNewDocumentAsync(InsertDocumentCommand command)
         {
-            return await ExecuteCommand<Guid?>(command);
+            return await ExecuteScalarCommand<Guid?>(command);
         }
 
         public async Task<CommandResult<int>> DisableDocumentAsync(DisableDocumentCommand command)
         {
-            var result = await ExecuteCommand<int>(command);
+            var result = await ExecuteScalarCommand<int>(command);
             return result;
         }
 

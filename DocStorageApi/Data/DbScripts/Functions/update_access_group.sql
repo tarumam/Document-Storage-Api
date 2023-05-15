@@ -18,15 +18,5 @@ BEGIN
     GET DIAGNOSTICS rows_affected = ROW_COUNT;
     
     RETURN rows_affected;
-EXCEPTION 
-    WHEN unique_violation THEN
-        RAISE NOTICE 'The access group name already exists.';
-        RETURN -1;
-    WHEN foreign_key_violation THEN
-        RAISE NOTICE 'The access group does not exist.';
-        RETURN -2;
-    WHEN others THEN
-        RAISE NOTICE 'An unknown error has occurred.';
-        RETURN 0;
 END;
 $$ LANGUAGE plpgsql;

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Npgsql;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocStorageApi.Data.Commands
 {
@@ -17,6 +18,11 @@ namespace DocStorageApi.Data.Commands
         public Guid DocumentId { get; private set; }
 
         public override string Script => "SELECT remove_document_access_user(@UserId, @DocumentId)";
-        public override object Param => new { UserId, DocumentId };
+
+        public override List<NpgsqlParameter> Parameters => new List<NpgsqlParameter>()
+        {
+        new NpgsqlParameter("UserId", UserId),
+        new NpgsqlParameter("DocumentId", DocumentId)
+        };
     }
 }

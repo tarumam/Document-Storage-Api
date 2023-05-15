@@ -7,10 +7,10 @@ namespace DocStorageApi.Data
     public sealed class DbSession : IDisposable
     {
         // Manages connection
-        public IDbConnection Connection { get; set; }
+        public NpgsqlConnection Connection { get; set; }
 
         // Manages transactions
-        public IDbTransaction Transaction { get; set; }
+        public NpgsqlTransaction Transaction { get; set; }
 
         public readonly string ConnectionString;
 
@@ -23,6 +23,6 @@ namespace DocStorageApi.Data
 
         public void Dispose() => Connection?.Dispose();
 
-        private IDbConnection CreateConnection(string connectionString) => new NpgsqlConnection(connectionString);
+        private NpgsqlConnection CreateConnection(string connectionString) => new NpgsqlConnection(connectionString);
     }
 }

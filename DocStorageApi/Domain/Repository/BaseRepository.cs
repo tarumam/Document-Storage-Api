@@ -17,7 +17,7 @@ namespace DocStorageApi.Domain.Repository
             _logger = logger;
         }
 
-
+        [Obsolete("This method is deprecated and will be removed in a future release, use ExecuteScalarAsync instead.")]
         public async Task<CommandResult<TReturn>> ExecuteCommand<TReturn>(IBaseCommand command)
         {
             try
@@ -27,14 +27,49 @@ namespace DocStorageApi.Domain.Repository
                     return new CommandResult<TReturn>(command.ValidationResults);
                 }
 
-                var result = await _session.Connection.ExecuteScalarAsync<TReturn>(command.Script, command.Param, _session.Transaction);
+                var result = await _session.Connection.ExecuteScalarAsync<TReturn>(command.Script, command.Parameters, _session.Transaction);
+
                 return new CommandResult<TReturn>(result);
             }
             catch (PostgresException ex)
             {
-                _logger.LogError("Error on {query} with params {param}: {Message}", command.Script, command.Param, ex.Message);
+                _logger.LogError("Error on {query} with params {param}: {Message}", command.Script, command.ToString(), ex.Message);
                 return new CommandResult<TReturn>(ex.Message, ex.SqlState);
             }
+        }
+
+        public async Task<CommandResult<TReturn>> ExecuteScalarCommand<TReturn>(IBaseCommand command)
+        {
+            try
+            {
+                if (!command.IsValid())
+                {
+                    return new CommandResult<TReturn>(command.ValidationResults);
+                }
+
+                using var cmd = new NpgsqlCommand(command.Script, _session.Connection);
+
+                foreach (var param in command.Parameters)
+                {
+                    cmd.Parameters.Add(param);
+                }
+
+                var result = await cmd.ExecuteScalarAsync();
+
+                return new CommandResult<TReturn>(result == DBNull.Value ? default : (TReturn)result);
+            }
+            catch (PostgresException ex)
+            {
+
+                _logger.LogError("PostgresException on {query} with params {param}: {Message}", command.Script, command.Parameters.ToString(), ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception on {query} with params {param}: {Message}", command.Script, command.Parameters.ToString(), ex.Message);
+                throw;
+            }
+
         }
 
         public async Task<IEnumerable<TReturn>> QueryAsync<TReturn>(string query, object param = null)

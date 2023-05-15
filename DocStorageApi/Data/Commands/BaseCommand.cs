@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Npgsql;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocStorageApi.Data.Commands
 {
     public abstract class BaseCommand : IBaseCommand
     {
         public abstract string Script { get; }
-        public abstract object Param { get; }
+        public abstract List<NpgsqlParameter> Parameters { get; }
         public List<ValidationResult> ValidationResults { get; set; }
         public bool IsValid()
         {

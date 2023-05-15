@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Npgsql;
+using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocStorageApi.Data.Commands
 {
@@ -26,6 +28,7 @@ namespace DocStorageApi.Data.Commands
         [Required]
         [MinLength(3)]
         [MaxLength(50)]
+        [EmailAddress]
         public string Name { get; private set; }
 
         [Required]
@@ -43,8 +46,16 @@ namespace DocStorageApi.Data.Commands
         public string Salt { get; private set; }
         public bool Status { get; private set; }
 
-        public override string Script => "SELECT insert_user(@Name, @Password, @Role, @Status)";
-        public override object Param => new { Name, Password, Role, Status };
+        public override string Script => "SELECT insert_user(@Name, @Password, @Role, @Salt, @Status)";
+
+        public override List<NpgsqlParameter> Parameters => new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter<string>("@Name", NpgsqlDbType.Varchar) { Value = Name, Size=50},
+            new NpgsqlParameter<string>("@Password", NpgsqlDbType.Varchar) { Value = Password, Size=100},
+            new NpgsqlParameter<string>("@Role", NpgsqlDbType.Varchar) { Value = Role, Size=50},
+            new NpgsqlParameter<string>("@Salt", NpgsqlDbType.Varchar) { Value = Salt , Size = 10},
+            new NpgsqlParameter<bool>("@Status", NpgsqlDbType.Boolean) { Value = Status }
+        };
 
     }
 }

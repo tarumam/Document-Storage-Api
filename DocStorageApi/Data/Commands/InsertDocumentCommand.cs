@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Npgsql;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocStorageApi.Data.Commands
 {
@@ -44,6 +45,16 @@ namespace DocStorageApi.Data.Commands
         public Guid CreatedByUser { get; private set; }
 
         public override string Script => "SELECT insert_document(@FilePath, @Name, @Category, @Description, @PostedAt, @Status, @CreatedbyUser)";
-        public override object Param => new { FilePath, Name, Category, Description, PostedAt, Status, CreatedByUser };
+
+        public override List<NpgsqlParameter> Parameters => new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter("@FilePath", NpgsqlTypes.NpgsqlDbType.Varchar) { Value = FilePath },
+            new NpgsqlParameter("@Name", NpgsqlTypes.NpgsqlDbType.Varchar) { Value = string.IsNullOrEmpty(Name) ? DBNull.Value : Name },
+            new NpgsqlParameter("@Category", NpgsqlTypes.NpgsqlDbType.Varchar) { Value = string.IsNullOrEmpty(Category) ? DBNull.Value : Category },
+            new NpgsqlParameter("@Description", NpgsqlTypes.NpgsqlDbType.Varchar) { Value = string.IsNullOrEmpty(Description) ? DBNull.Value : Description },
+            new NpgsqlParameter("@PostedAt", NpgsqlTypes.NpgsqlDbType.TimestampTz) { Value = PostedAt },
+            new NpgsqlParameter("@Status", NpgsqlTypes.NpgsqlDbType.Boolean) { Value = Status },
+            new NpgsqlParameter("@CreatedbyUser", NpgsqlTypes.NpgsqlDbType.Uuid) { Value = CreatedByUser }
+        };
     }
 }

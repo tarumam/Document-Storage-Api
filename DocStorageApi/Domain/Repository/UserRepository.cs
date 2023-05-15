@@ -14,22 +14,22 @@ namespace DocStorageApi.Domain.Repository
 
         public async Task<CommandResult<Guid?>> InsertUserAsync(InsertUserCommand command)
         {
-            return await ExecuteCommand<Guid?>(command);
+            return await ExecuteScalarCommand<Guid?>(command);
         }
 
         public async Task<CommandResult<int>> UpdateUserAsync(UpdateUserCommand command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
 
         public async Task<CommandResult<int>> DisableUserAsync(DisableUserCommand command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
 
         public async Task<CommandResult<int>> UpdateTokenId(UpdateUserTokenIdCommand command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
 
         public async Task<UserCredentialsResult> GetUserByCredentials(string username, string password)

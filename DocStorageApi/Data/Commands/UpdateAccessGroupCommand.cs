@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Npgsql;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocStorageApi.Data.Commands
 {
@@ -26,7 +27,12 @@ namespace DocStorageApi.Data.Commands
 
         public bool Status { get; }
         public override string Script => @"SELECT update_access_group(@Id, @Name, @Status)";
-        public override object Param => new { Id, Name, Status };
+        public override List<NpgsqlParameter> Parameters => new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter("Id", Id),
+            new NpgsqlParameter("Name", Name),
+            new NpgsqlParameter("Status", Status),
+        };
 
     }
 };

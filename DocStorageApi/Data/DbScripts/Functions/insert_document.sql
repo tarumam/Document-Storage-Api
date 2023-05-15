@@ -29,16 +29,10 @@ BEGIN
             p_status, 
             p_created_by_user
         )
+        ON CONFLICT DO NOTHING
         RETURNING id INTO new_document_id;
         
         RETURN new_document_id;
 
-    EXCEPTION 
-        WHEN unique_violation THEN
-            RAISE EXCEPTION 'The document with name % already exists.', p_name;
-        WHEN foreign_key_violation THEN
-            RAISE EXCEPTION 'User id not found. Are you logged in?';
-        WHEN others THEN
-            RAISE EXCEPTION  'An unknown error has occurred.';
 END;
 $$ LANGUAGE plpgsql;

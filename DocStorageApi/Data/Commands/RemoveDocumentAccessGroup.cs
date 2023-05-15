@@ -1,4 +1,6 @@
-﻿namespace DocStorageApi.Data.Commands
+﻿using Npgsql;
+
+namespace DocStorageApi.Data.Commands
 {
 
     public class RemoveDocumentAccessGroup : BaseCommand
@@ -20,6 +22,10 @@
 
         public override string Script => @"SELECT remove_document_access_groups(@DocumentId, @AccessGroupId)";
 
-        public override object Param => new { DocumentId, AccessGroupId };
+        public override List<NpgsqlParameter> Parameters => new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter("@DocumentId", DocumentId),
+            new NpgsqlParameter("@AccessGroupId", AccessGroupId)
+        };
     }
 }

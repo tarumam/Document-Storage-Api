@@ -21,13 +21,13 @@ namespace DocStorageApi.Services
         {
             var command = new InsertDocumentCommand(newDocument.FileKey, newDocument.Name, newDocument.Category, newDocument.Description, newDocument.PostedAt, true, _currentUserId);
             var result = await _docRepository.AddNewDocumentAsync(command);
-            return result.Succeeded;
+            return result.Executed;
         }
 
         public async Task<bool> DisableDocumentAsync(Guid documentId)
         {
             var result = await _docRepository.DisableDocumentAsync(new DisableDocumentCommand(documentId));
-            return result.Succeeded;
+            return result.Executed;
         }
 
         public async Task<IEnumerable<DocumentsResponse>> GetAllDocumentsAsync()

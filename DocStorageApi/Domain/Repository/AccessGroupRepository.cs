@@ -14,22 +14,22 @@ namespace DocStorageApi.Domain.Repository
 
         public async Task<CommandResult<int>> AddAccessGroupAsync(InsertAccessGroup command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
 
         public async Task<CommandResult<int>> UpdateAccessGroupAsync(UpdateAccessGroupCommand command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
 
         public async Task<CommandResult<int>> AssignUserToAccessGroupAsync(AssignUserToAccessGroupCommand command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
 
         public async Task<CommandResult<int>> RemoveUserFromAccessGroupAsync(RemoveUserAccessGroupCommand command)
         {
-            return await ExecuteCommand<int>(command);
+            return await ExecuteScalarCommand<int>(command);
         }
 
         public async Task<IEnumerable<AccessGroupResponse>> GetAllAccessGroupsAsync()

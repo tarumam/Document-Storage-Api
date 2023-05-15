@@ -12,12 +12,5 @@ BEGIN
     GET DIAGNOSTICS rows_affected = ROW_COUNT;
 
     RETURN rows_affected;
-EXCEPTION 
-    WHEN foreign_key_violation THEN
-        RAISE NOTICE 'The user or document does not exist.';
-        RETURN -1;
-    WHEN others THEN
-        RAISE NOTICE 'An unknown error has occurred.';
-        RETURN 0;
 END;
 $$ LANGUAGE plpgsql;

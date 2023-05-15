@@ -83,7 +83,6 @@ namespace DocStorageApi.Api.Controllers
 
             if (!result.Status) return BadRequest();
 
-            // TODO: Put a log here 
             var postedAt = result.postedDate.HasValue ? result.postedDate.Value : DateTime.UtcNow;
 
             var success = await _documentService.AddNewDocumentAsync(new AddNewDocumentRequest(result.Key, uploadInfo.Name, uploadInfo.Category, uploadInfo.Description, postedAt));

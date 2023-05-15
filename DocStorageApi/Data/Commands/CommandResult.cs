@@ -11,22 +11,22 @@ namespace DocStorageApi.Data.Commands
         public CommandResult(T data)
         {
             Data = data;
-            Succeeded = true;
+            Executed = data != null ? true : false;
         }
         public CommandResult(string errorMessage, string commandName)
         {
             var error = new ValidationResult(errorMessage, new List<string>() { commandName });
             Errors = new List<ValidationResult> { error };
-            Succeeded = false;
+            Executed = false;
         }
 
         public CommandResult(IEnumerable<ValidationResult> validationMessages)
         {
             Errors = validationMessages;
-            Succeeded = false;
+            Executed = false;
         }
 
-        public bool Succeeded { get; private set; } = false;
+        public bool Executed { get; private set; } = false;
         public T Data { get; private set; }
         public IEnumerable<ValidationResult> Errors { get; private set; } = new List<ValidationResult>();
 
@@ -35,9 +35,11 @@ namespace DocStorageApi.Data.Commands
             Data = data;
         }
 
-        public void SetError(T data)
+        public void SetError(string error)
         {
-            Data = data;
+            var validationError = new ValidationResult(error);
+            Errors.Append(validationError); 
+            Executed = false;
         }
     }
 

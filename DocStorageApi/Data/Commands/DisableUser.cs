@@ -1,14 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Npgsql;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocStorageApi.Data.Commands
 {
-    /// <summary>
-    /// Represents disable_user
-    /// </summary>
-    /// <param name="Id">UserId</param>
-    /// <returns>Number of affected rows</returns>
     public class DisableUserCommand : BaseCommand
     {
+        /// <summary>
+        /// Represents disable_user
+        /// </summary>
+        /// <param name="Id">UserId</param>
+        /// <returns>Number of affected rows</returns>
         public DisableUserCommand(Guid id)
         {
             Id = id;
@@ -18,6 +19,10 @@ namespace DocStorageApi.Data.Commands
         public Guid Id { get; }
 
         public override string Script => "SELECT disable_user(@Id)";
-        public override object Param => new { Id };
+
+        public override List<NpgsqlParameter> Parameters => new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter<Guid>("Id", Id)
+        };
     }
 }

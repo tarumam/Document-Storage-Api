@@ -10,25 +10,17 @@ DECLARE
     rows_affected integer;
 BEGIN
 
-        UPDATE users
-        SET 
-            name = p_name,
-            password = p_password,
-            role = p_role,
-            status = p_status,
-            updated_at = current_timestamp
-        WHERE id = p_user_id;
+    UPDATE users
+    SET 
+        name = p_name,
+        password = p_password,
+        role = p_role,
+        status = p_status,
+        updated_at = current_timestamp
+    WHERE id = p_user_id;
 
-        GET DIAGNOSTICS rows_affected = ROW_COUNT;
+    GET DIAGNOSTICS rows_affected = ROW_COUNT;
 
-        RETURN rows_affected;
-
-    EXCEPTION 
-        WHEN unique_violation THEN
-            RAISE EXCEPTION 'There is already a user with the supplied username';
-
-        WHEN others THEN
-            RAISE EXCEPTION 'An unknown error has occurred. %', SQLERRM;
-
+    RETURN rows_affected;
 END;
 $$ LANGUAGE plpgsql;

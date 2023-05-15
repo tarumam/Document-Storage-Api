@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Npgsql;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocStorageApi.Data.Commands
 {
@@ -30,6 +31,7 @@ namespace DocStorageApi.Data.Commands
 
         [Required]
         [StringLength(50, MinimumLength = 3)]
+        [EmailAddress]
         public string Name { get; private set; }
 
         [Required]
@@ -46,7 +48,15 @@ namespace DocStorageApi.Data.Commands
 
         public bool Status { get; private set; }
         public override string Script => "SELECT update_user(@Id, @Name, @Password, @Role, @Status)";
-        public override object Param => new { Id, Name, Password, Role, Status };
 
+        public override List<NpgsqlParameter> Parameters => new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter<Guid>("Id", Id),
+            new NpgsqlParameter<string>("Name", Name),
+            new NpgsqlParameter<string>("Password", Password),
+            new NpgsqlParameter<string>("Role", Role),
+            new NpgsqlParameter<string>("Salt", Salt),
+            new NpgsqlParameter<bool>("Status", Status)
+        };
     }
 }
