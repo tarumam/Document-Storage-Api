@@ -2,7 +2,10 @@
 using DocStorageApi.Data;
 using DocStorageApi.Data.Commands;
 using DocStorageApi.Domain.Repository.Interfaces;
+using DocStorageApi.Domain.RetryPolicy;
+using Microsoft.Data.SqlClient;
 using Npgsql;
+using Polly;
 
 namespace DocStorageApi.Domain.Repository
 {
@@ -40,35 +43,34 @@ namespace DocStorageApi.Domain.Repository
 
         public async Task<CommandResult<TReturn>> ExecuteScalarCommand<TReturn>(IBaseCommand command)
         {
-            try
+
+            // TODO: Put this in another file
+            Policy retryPolicy = Policy
+                .Handle<PostgresException>()
+                .Or<NpgsqlException>()
+                .WaitAndRetryAsync(
+                    retryCount: 3,
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(1) * Math.Pow(2, attempt - 1),
+                    onRetryAsync: async (exception, timeSpan, retryCount, context) =>
+                    {
+                        // TODO: Check to make it work async
+                        _logger.LogWarning("Exception {Message}, Retry: {retryCount}", exception.Message, retryCount);
+                    });
+
+            if (!command.IsValid())
             {
-                if (!command.IsValid())
-                {
-                    return new CommandResult<TReturn>(command.ValidationResults);
-                }
-
-                using var cmd = new NpgsqlCommand(command.Script, _session.Connection);
-
-                foreach (var param in command.Parameters)
-                {
-                    cmd.Parameters.Add(param);
-                }
-
-                var result = await cmd.ExecuteScalarAsync();
-
-                return new CommandResult<TReturn>(result == DBNull.Value ? default : (TReturn)result);
+                return new CommandResult<TReturn>(command.ValidationResults);
             }
-            catch (PostgresException ex)
+
+            using var cmd = new NpgsqlCommand(command.Script, _session.Connection);
+
+            foreach (var param in command.Parameters)
             {
+                cmd.Parameters.Add(param);
+            }
+            var result = await retryPolicy.ExecuteAsync(async () => await cmd.ExecuteScalarAsync());
 
-                _logger.LogError("PostgresException on {query} with params {param}: {Message}", command.Script, command.Parameters.ToString(), ex.Message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Exception on {query} with params {param}: {Message}", command.Script, command.Parameters.ToString(), ex.Message);
-                throw;
-            }
+            return new CommandResult<TReturn>(result == DBNull.Value ? default : (TReturn)result);
 
         }
 
